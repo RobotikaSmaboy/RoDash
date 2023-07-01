@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Absensi Member</h1>
+</div>
+
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#editMemberModal">
+    Tambah Data
+</button>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tableListMember" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>UID</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if data %}
+                    {% for absen in data %}
+                    <tr>
+                        <td><strong>{{ absen["nama"] }}</strong></td>
+                        <td>{{ absen["nis"] }}</td>
+                        <td>{{ absen["kelas"] }}</td>
+                        <td>
+                            {{ absen["card_uid"] }}
+                        </td>
+                        <td>
+                            {{ absen["tanggal"] }}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('main.absen_delete' ) }}" method="post">
+                                <input type="hidden" name="deleteAbsenNIS" value="{{ absen['nis'] }}">
+                                <input type="hidden" name="deleteAbsenTanggal" value="{{ absen['tanggal'] }}">
+                                <button type="submit" class="btn btn-danger mb-2"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center"><i>Tidak ada data...</i></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add member modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" role="dialog" aria-labelledby="editMemberModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMemberModalLabel">Tambah Member</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            
+            <form action="{{ url_for('main.absen_add' ) }}" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="addAbsenUID">UID Kartu</label>
+                        <input type="text" name="addAbsenUID" class="form-control" id="addAbsenUID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAbsenTanggal">Tanggal Absensi</label>
+                        <input type="date" name="addAbsenTanggal" class="form-control" id="addAbsenTanggal" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

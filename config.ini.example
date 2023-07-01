@@ -1,0 +1,10 @@
+[App]
+SECRET_KEY=
+API_URL=
+
+[Database]
+USER=
+PASS=
+HOST=
+PORT=
+DB_NAME=

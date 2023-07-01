@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Daftar Member</h1>
+</div>
+
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#editMemberModal">
+    Tambah Member
+</button>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tableListMember" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>UID Kartu</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if data %}
+                    {% for member in data %}
+                    <tr>
+                        <td><strong>{{ member["nama"] }}</strong></td>
+                        <td>{{ member["nis"] }}</td>
+                        <td>{{ member["kelas"] }}</td>
+                        <td>
+                            {% if member["card_uid"] %}                                
+                            {{ member["card_uid"] }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-toggle">
+                                <form action="{{ url_for('main.member_delete' ) }}" method="post">
+                                <input type="hidden" name="deleteMemberNIS" value="{{ member['nis'] }}">
+                                <button type="submit" class="btn btn-danger mr-2"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editMember{{member['nis']}}">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Edit member: {{ member['nis'] }} -->
+                    <div class="modal fade" id="editMember{{member['nis']}}" tabindex="-1" role="dialog" aria-labelledby="editMember{{member['nis']}}Label" aria-modal="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editMember{{member['nis']}}Label">Edit Member</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                
+                                <form action="{{ url_for('main.member_edit' ) }}" method="post">
+                                    <div class="modal-body">
+                    
+                                        <div class="form-group">
+                                          <label for="editMemberNIS">NIS Siswa (Tidak bisa diubah)</label>
+                                          <input type="number" name="editMemberNIS" class="form-control" id="editMemberNIS" value="{{ member['nis'] }}" readonly required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editMemberName">Nama Siswa</label>
+                                          <input type="text" name="editMemberName" class="form-control" id="editMemberName" value="{{ member['nama'] }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editMemberKelas">Kelas Siswa</label>
+                                          <input type="text" name="editMemberKelas" class="form-control" id="editMemberKelas" value="{{ member['kelas'] }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editMemberUID">UID Kartu</label>
+                                          <input type="text" name="editMemberUID" class="form-control" id="editMemberUID" value="{{ member['card_uid'] if member['card_uid'] else '' }}" required>
+                                        </div>
+                                        
+                                    </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                                </form>
+                    
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center"><i>Tidak ada data...</i></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add member modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" role="dialog" aria-labelledby="editMemberModalLabel" aria-modal="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMemberModalLabel">Tambah Member</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            
+            <form action="{{ url_for('main.member_add' ) }}" method="post">
+            <div class="modal-body">
+
+                <div class="form-group">
+                  <label for="addMemberNIS">NIS Siswa</label>
+                  <input type="number" name="addMemberNIS" class="form-control" id="addMemberNIS" required>
+                </div>
+                    <div class="form-group">
+                      <label for="addMemberName">Nama Siswa</label>
+                      <input type="text" name="addMemberName" class="form-control" id="addMemberName" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="addMemberKelas">Kelas Siswa</label>
+                      <input type="text" name="addMemberKelas" class="form-control" id="addMemberKelas" required>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

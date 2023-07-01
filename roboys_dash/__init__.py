@@ -6,15 +6,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_migrate import Migrate
 
-from configparser import ConfigParser
+from dotenv import dotenv_values
 
-config = ConfigParser()
-config.read("config.ini")
-appConfig = config["App"]
-dbConfig = config["Database"]
+config = dotenv_values(".env")
 
 # RoBoys API URL
-API_URL = appConfig["API_URL"]
+API_URL = config["API_URL"]
 
 # JWT init
 jwt = JWTManager()
@@ -27,16 +24,16 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.secret_key = appConfig["SECRET_KEY"]
+    app.secret_key = config["SECRET_KEY"]
     # app.config["PROPAGATE_EXCEPTIONS"] = True
 
     # JWT init
-    app.config["JWT_SECRET_KEY"] = appConfig["SECRET_KEY"]
+    app.config["JWT_SECRET_KEY"] = config["SECRET_KEY"]
     jwt.init_app(app)
 
     # SQLAlchemy init
     app.config["SQLALCHEMY_DATABASE_URI"] = \
-        f"mysql://{dbConfig['USER']}:{dbConfig['PASS']}@{dbConfig['HOST']}:{dbConfig['PORT']}/{dbConfig['DB_NAME']}"
+        f"mysql://{config['MYSQL_USER']}:{config['MYSQL_PASSWORD']}@{config['MYSQL_HOST']}:{config['MYSQL_PORT']}/{config['MYSQL_DATABASE']}"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app)
 

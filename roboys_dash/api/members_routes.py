@@ -18,7 +18,6 @@ class MembersAPI(Resource):
         self.parser = reqparse.RequestParser()
         super().__init__()
 
-    @jwt_or_auth_required()
     def get(self):
         self.parser.add_argument("nis", type=int, help="NIS siswa", location=["args"], required=False)
         args = self.parser.parse_args()

@@ -36,9 +36,7 @@ def login():
         else:
             homeResp = make_response(redirect(url_for("main.home")))
         homeResp.set_cookie("access_token", loginReq["access_token"])
-        homeResp.set_cookie("access_token_expire", str(loginReq["access_token_expire"]))
-        homeResp.set_cookie("refresh_token", loginReq["refresh_token"])
-        homeResp.set_cookie("refresh_token_expire", str(loginReq["refresh_token_expire"]))
+
         return homeResp
 
     return render_template("login.html")
@@ -48,11 +46,6 @@ def logout():
     loginResp = make_response(redirect(url_for("auth.login")))
     # if request.cookies.get("access_token"):
     #     loginResp.delete_cookie("access_token")
-    # if request.cookies.get("expire"):
-    #     loginResp.delete_cookie("expire")
     loginResp.delete_cookie("access_token")
-    loginResp.delete_cookie("access_token_expire")
-    loginResp.delete_cookie("refresh_token")
-    loginResp.delete_cookie("refresh_token_expire")
 
     return loginResp

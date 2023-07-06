@@ -3,16 +3,10 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse
 
 from flask_jwt_extended import create_access_token
-from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import get_jwt_identity
 
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-
-from datetime import datetime
-from datetime import timedelta
-from pytz import timezone
 
 from roboys_dash import db
 from roboys_dash.tables import AdminMember
@@ -38,24 +32,12 @@ class LoginAPI(Resource):
             return {"message": "Wrong Password!"}, 401
 
         # Generate JWT
-        # JWT Expire: 60 minutes
-        jktTimezone = timezone("Asia/Jakarta")
-        currentDate = datetime.now(jktTimezone)
-
-        accessTokenDelta = timedelta(minutes=60)
-        accessTokenExpire = datetime.timestamp(currentDate + accessTokenDelta)
-        accessToken = create_access_token(identity=parser["username"], expires_delta=accessTokenDelta)
-
-        refreshTokenDelta = timedelta(days=2)
-        refreshTokenExpire = datetime.timestamp(currentDate + refreshTokenDelta)
-        refreshToken = create_refresh_token(identity=parser["username"], expires_delta=refreshTokenDelta)
+        # JWT Expire: Never
+        accessToken = create_access_token(identity=parser["username"], expires_delta=False)
 
         return {
             "user_info": member.serialize,
             "access_token": accessToken,
-            "access_token_expire": accessTokenExpire,
-            "refresh_token": refreshToken,
-            "refresh_token_expire": refreshTokenExpire
         }
 
 class RegisterAPI(Resource):
@@ -79,27 +61,6 @@ class RegisterAPI(Resource):
 
         return member.serialize
 
-class RefreshAPI(Resource):
-    def __init__(self) -> None:
-        self.parser = reqparse.RequestParser()
-        super().__init__()
-
-    @jwt_required(refresh=True)
-    def post(self):
-        identity = get_jwt_identity()
-
-        jktTimezone = timezone("Asia/Jakarta")
-        currentDate = datetime.now(jktTimezone)
-
-        accessTokenDelta = timedelta(minutes=60)
-        accessTokenExpire = datetime.timestamp(currentDate + accessTokenDelta)
-        accessToken = create_access_token(identity=identity, expires_delta=accessTokenDelta, fresh=False)
-
-        return {
-            "access_token": accessToken,
-            "access_token_expire": accessTokenExpire,
-        }
-
 class AdminsAPI(Resource):
     def __init__(self) -> None:
         self.parser = reqparse.RequestParser()
@@ -120,5 +81,4 @@ class AdminsAPI(Resource):
 
 auth_api.add_resource(LoginAPI, "/login")
 auth_api.add_resource(RegisterAPI, "/register")
-auth_api.add_resource(RefreshAPI, "/refresh")
 auth_api.add_resource(AdminsAPI, "/admins")

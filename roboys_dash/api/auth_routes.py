@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask import Flask
 
 from flask_restful import Api, Resource, reqparse
 
@@ -12,7 +13,7 @@ from roboys_dash import db
 from roboys_dash.tables import AdminMember
 
 auth_bp = Blueprint("api_auth", __name__)
-auth_api = Api(auth_bp)
+auth_api = Api(auth_bp, errors=Flask.errorhandler)
 
 class LoginAPI(Resource):
     def __init__(self) -> None:

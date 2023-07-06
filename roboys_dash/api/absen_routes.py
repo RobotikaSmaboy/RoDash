@@ -1,3 +1,4 @@
+from flask import Flask
 from flask import Blueprint
 
 from flask_restful import Api, Resource, reqparse
@@ -15,7 +16,7 @@ from pytz import timezone
 import json
 
 absen_bp = Blueprint("api_absen", __name__)
-absen_api = Api(absen_bp)
+absen_api = Api(absen_bp, errors=Flask.errorhandler)
 
 class AbsenAPI(Resource):
     def __init__(self) -> None:

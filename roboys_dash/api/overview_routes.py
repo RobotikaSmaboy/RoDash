@@ -1,3 +1,4 @@
+from flask import Flask
 from flask import Blueprint
 
 from flask_restful import Api, Resource
@@ -8,7 +9,7 @@ from roboys_dash.tables import Absen
 from roboys_dash.api.utils import jwt_or_auth_required
 
 overview_bp = Blueprint("api_overview", __name__)
-overview_api = Api(overview_bp)
+overview_api = Api(overview_bp, errors=Flask.errorhandler)
 
 class OverviewAPI(Resource):
     @jwt_or_auth_required()

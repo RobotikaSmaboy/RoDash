@@ -1,3 +1,4 @@
+from flask import Flask
 from flask import Blueprint
 
 from flask_restful import Api, Resource, reqparse
@@ -11,7 +12,7 @@ from roboys_dash.api.utils import jwt_or_auth_required
 import json
 
 members_bp = Blueprint("api_members", __name__)
-members_api = Api(members_bp)
+members_api = Api(members_bp, errors=Flask.errorhandler)
 
 class MembersAPI(Resource):
     def __init__(self) -> None:

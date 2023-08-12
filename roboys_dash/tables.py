@@ -52,7 +52,6 @@ class Absen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nis = db.Column(db.String(7), db.ForeignKey("member.nis"), nullable=False)
     tanggal = db.Column(db.Date, nullable=False)
-    cardUid = db.Column(db.String(255), nullable=False)
 
     @property
     def serialize(self):
@@ -62,7 +61,6 @@ class Absen(db.Model):
            "id": self.id,
            "nis": self.nis,
            "tanggal": datetime.strftime(self.tanggal, "%Y-%m-%d"),
-           "card_uid": self.cardUid,
            **self.member.serialize
        }
 
